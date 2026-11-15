@@ -1,0 +1,41 @@
+rules_version = '2';
+
+// PO Manager — Cloud Storage rules. Default deny.
+// Public catalog images may be fetched by direct URL (get) but never listed.
+// Payment proofs are uploaded by the server (Admin SDK) and readable only by the owning seller.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isOwner(uid) { return request.auth != null && request.auth.uid == uid; }
+    function validImage() {
+      return request.resource.contentType.matches('image/(jpeg|png|webp)')
+        && request.resource.size > 0
+        && request.resource.size <= 2 * 1024 * 1024;
+    }
+    function validName(name) { return name.matches('[A-Za-z0-9._-]{1,100}'); }
+
+    match /sellers/{uid}/store/{fileName} {
+      allow get: if true;
+      allow list: if false;
+      allow create, update: if isOwner(uid) && validName(fileName) && validImage();
+      allow delete: if isOwner(uid);
+    }
+
+    match /sellers/{uid}/products/{productId}/{fileName} {
+      allow get: if true;
+      allow list: if false;
+      allow create, update: if isOwner(uid) && validName(fileName) && validImage();
+      allow delete: if isOwner(uid);
+    }
+
+    match /sellers/{uid}/payment-proofs/{orderId}/{fileName} {
+      allow get: if isOwner(uid);
+      allow list: if false;
+      allow write: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

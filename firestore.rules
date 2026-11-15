@@ -1,0 +1,221 @@
+rules_version = '2';
+
+// PO Manager — Firestore security rules.
+// Model: default deny. Every business document carries `sellerId` (= owner's Firebase UID).
+// Sellers may write only their own catalog/PO drafts. Orders, payments, shipments, audit logs and all
+// financial counters are written exclusively by the server (Admin SDK bypasses rules).
+// Public pages are served by server APIs with whitelisted fields; the public never reads Firestore directly.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function signedIn() { return request.auth != null; }
+    function isOwner(sellerId) { return signedIn() && request.auth.uid == sellerId; }
+    function ownsExisting() { return isOwner(resource.data.sellerId); }
+    function ownsNew() { return isOwner(request.resource.data.sellerId); }
+
+    function newKeys() { return request.resource.data.keys(); }
+    function changed() { return request.resource.data.diff(resource.data).affectedKeys(); }
+    function stamped(field) { return request.resource.data[field] == request.time; }
+
+    function str(v, min, max) { return v is string && v.size() >= min && v.size() <= max; }
+    function money(v) { return v is int && v >= 0 && v <= 1000000000; }
+    function count(v, max) { return v is int && v >= 0 && v <= max; }
+    function validSlug(v) { return str(v, 3, 60) && v.matches('^[a-z0-9]+(-[a-z0-9]+)*$'); }
+    function catalogStatus(v) { return v in ['ACTIVE', 'ARCHIVED']; }
+
+    function productPath(id) { return /databases/$(database)/documents/products/$(id); }
+    function poPath(id) { return /databases/$(database)/documents/purchase_orders/$(id); }
+
+    // ---------- users ----------
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+
+      allow create: if isOwner(uid)
+        && newKeys().hasOnly(['displayName', 'email', 'createdAt', 'updatedAt'])
+        && newKeys().hasAll(['displayName', 'email', 'createdAt', 'updatedAt'])
+        && str(request.resource.data.displayName, 2, 60)
+        && request.resource.data.email == request.auth.token.email
+        && stamped('createdAt') && stamped('updatedAt');
+
+      allow update: if isOwner(uid)
+        && changed().hasOnly(['displayName', 'updatedAt'])
+        && str(request.resource.data.displayName, 2, 60)
+        && stamped('updatedAt');
+
+      allow delete: if false;
+    }
+
+    // ---------- stores (one per seller; document ID == seller UID) ----------
+    // Created server-side (slug uniqueness is claimed transactionally via store_slugs).
+    match /stores/{storeId} {
+      allow read: if isOwner(storeId);
+      allow create, delete: if false;
+
+      allow update: if isOwner(storeId) && ownsExisting()
+        && changed().hasOnly(['name', 'description', 'whatsappNumber', 'logoPath', 'paymentInfo', 'updatedAt'])
+        && str(request.resource.data.name, 1, 80)
+        && str(request.resource.data.description, 0, 500)
+        && str(request.resource.data.get('paymentInfo', ''), 0, 500)
+        && str(request.resource.data.whatsappNumber, 8, 15)
+        && request.resource.data.whatsappNumber.matches('^[1-9][0-9]{7,14}$')
+        && (request.resource.data.logoPath == null
+            || (request.resource.data.logoPath is string
+                && request.resource.data.logoPath.matches('^sellers/' + request.auth.uid + '/store/[A-Za-z0-9._-]{1,100}$')))
+        && stamped('updatedAt');
+    }
+
+    // ---------- products ----------
+    function validProduct(d) {
+      return str(d.name, 1, 120)
+        && validSlug(d.slug)
+        && str(d.description, 0, 2000)
+        && d.imagePaths is list && d.imagePaths.size() <= 5
+        && money(d.sellingPrice)
+        && money(d.purchaseCost)
+        && d.trackStock is bool
+        && count(d.stock, 1000000)
+        && d.hasVariants is bool
+        && catalogStatus(d.status);
+    }
+
+    match /products/{productId} {
+      allow read: if ownsExisting();
+
+      allow create: if ownsNew()
+        && request.resource.data.storeId == request.auth.uid
+        && newKeys().hasOnly(['sellerId', 'storeId', 'name', 'slug', 'description', 'imagePaths', 'sellingPrice',
+                              'purchaseCost', 'trackStock', 'stock', 'hasVariants', 'status', 'createdAt', 'updatedAt'])
+        && newKeys().hasAll(['sellerId', 'storeId', 'name', 'slug', 'description', 'imagePaths', 'sellingPrice',
+                             'purchaseCost', 'trackStock', 'stock', 'hasVariants', 'status', 'createdAt', 'updatedAt'])
+        && validProduct(request.resource.data)
+        && stamped('createdAt') && stamped('updatedAt');
+
+      allow update: if ownsExisting()
+        && changed().hasOnly(['name', 'slug', 'description', 'imagePaths', 'sellingPrice', 'purchaseCost',
+                              'trackStock', 'stock', 'hasVariants', 'status', 'updatedAt'])
+        && validProduct(request.resource.data)
+        && stamped('updatedAt');
+
+      // No hard delete: orders keep historical snapshots, products are archived (status = ARCHIVED).
+      allow delete: if false;
+    }
+
+    // ---------- product variants ----------
+    function validVariant(d) {
+      return str(d.name, 1, 80)
+        && money(d.sellingPrice)
+        && money(d.purchaseCost)
+        && count(d.stock, 1000000)
+        && catalogStatus(d.status);
+    }
+
+    match /product_variants/{variantId} {
+      allow read: if ownsExisting();
+
+      allow create: if ownsNew()
+        && newKeys().hasOnly(['sellerId', 'productId', 'name', 'sellingPrice', 'purchaseCost', 'stock', 'status', 'createdAt', 'updatedAt'])
+        && newKeys().hasAll(['sellerId', 'productId', 'name', 'sellingPrice', 'purchaseCost', 'stock', 'status', 'createdAt', 'updatedAt'])
+        && request.resource.data.productId is string
+        && get(productPath(request.resource.data.productId)).data.sellerId == request.auth.uid
+        && validVariant(request.resource.data)
+        && stamped('createdAt') && stamped('updatedAt');
+
+      allow update: if ownsExisting()
+        && changed().hasOnly(['name', 'sellingPrice', 'purchaseCost', 'stock', 'status', 'updatedAt'])
+        && validVariant(request.resource.data)
+        && stamped('updatedAt');
+
+      allow delete: if false;
+    }
+
+    // ---------- purchase orders ----------
+    // Status, counters and close metadata are server-controlled. Clients create DRAFTs and edit
+    // content only while the PO is DRAFT or SCHEDULED.
+    function validPO(d) {
+      return str(d.title, 3, 120)
+        && validSlug(d.slug)
+        && str(d.description, 0, 2000)
+        && d.paymentMode in ['FULL', 'DP']
+        && ((d.paymentMode == 'DP' && d.dpPercent is int && d.dpPercent >= 1 && d.dpPercent <= 99)
+            || (d.paymentMode == 'FULL' && d.dpPercent == null))
+        && d.openAt is timestamp && d.closeAt is timestamp && d.closeAt > d.openAt
+        && (d.quota == null || (d.quota is int && d.quota >= 1 && d.quota <= 100000))
+        && d.minOrderQty is int && d.minOrderQty >= 1 && d.minOrderQty <= 1000;
+    }
+
+    match /purchase_orders/{poId} {
+      allow read: if ownsExisting();
+
+      allow create: if ownsNew()
+        && request.resource.data.storeId == request.auth.uid
+        && newKeys().hasOnly(['sellerId', 'storeId', 'title', 'slug', 'description', 'paymentMode', 'dpPercent', 'openAt',
+                              'closeAt', 'quota', 'minOrderQty', 'status', 'orderedQty', 'orderCount', 'closedAt',
+                              'closeReason', 'createdAt', 'updatedAt'])
+        && newKeys().hasAll(['sellerId', 'storeId', 'title', 'slug', 'description', 'paymentMode', 'dpPercent', 'openAt',
+                             'closeAt', 'quota', 'minOrderQty', 'status', 'orderedQty', 'orderCount', 'closedAt',
+                             'closeReason', 'createdAt', 'updatedAt'])
+        && validPO(request.resource.data)
+        && request.resource.data.status == 'DRAFT'
+        && request.resource.data.orderedQty == 0
+        && request.resource.data.orderCount == 0
+        && request.resource.data.closedAt == null
+        && request.resource.data.closeReason == null
+        && stamped('createdAt') && stamped('updatedAt');
+
+      allow update: if ownsExisting()
+        && resource.data.status in ['DRAFT', 'SCHEDULED']
+        && changed().hasOnly(['title', 'slug', 'description', 'paymentMode', 'dpPercent', 'openAt', 'closeAt',
+                              'quota', 'minOrderQty', 'updatedAt'])
+        // Shared links must not change once the PO leaves DRAFT.
+        && (resource.data.status == 'DRAFT' || request.resource.data.slug == resource.data.slug)
+        && validPO(request.resource.data)
+        && stamped('updatedAt');
+
+      // Only never-published drafts can be deleted; anything else keeps its history.
+      allow delete: if ownsExisting() && resource.data.status == 'DRAFT';
+    }
+
+    // ---------- purchase order items ----------
+    function editablePO(id) {
+      return get(poPath(id)).data.sellerId == request.auth.uid
+        && get(poPath(id)).data.status in ['DRAFT', 'SCHEDULED'];
+    }
+
+    match /purchase_order_items/{itemId} {
+      allow read: if ownsExisting();
+
+      allow create: if ownsNew()
+        && newKeys().hasOnly(['sellerId', 'poId', 'productId', 'variantId', 'sellingPrice', 'createdAt', 'updatedAt'])
+        && newKeys().hasAll(['sellerId', 'poId', 'productId', 'variantId', 'sellingPrice', 'createdAt', 'updatedAt'])
+        && request.resource.data.poId is string
+        && request.resource.data.productId is string
+        && editablePO(request.resource.data.poId)
+        && get(productPath(request.resource.data.productId)).data.sellerId == request.auth.uid
+        && (request.resource.data.variantId == null || request.resource.data.variantId is string)
+        && money(request.resource.data.sellingPrice)
+        && stamped('createdAt') && stamped('updatedAt');
+
+      allow update: if ownsExisting()
+        && editablePO(resource.data.poId)
+        && changed().hasOnly(['sellingPrice', 'updatedAt'])
+        && money(request.resource.data.sellingPrice)
+        && stamped('updatedAt');
+
+      allow delete: if ownsExisting() && editablePO(resource.data.poId);
+    }
+
+    // ---------- server-written, seller-readable ----------
+    // Orders hold customers' personal data and trusted totals: clients can read their own, never write.
+    match /orders/{id}         { allow read: if ownsExisting(); allow write: if false; }
+    match /order_items/{id}    { allow read: if ownsExisting(); allow write: if false; }
+    match /payments/{id}       { allow read: if ownsExisting(); allow write: if false; }
+    match /shipments/{id}      { allow read: if ownsExisting(); allow write: if false; }
+    match /audit_logs/{id}     { allow read: if ownsExisting(); allow write: if false; }
+
+    // store_slugs, idempotency_keys, rate_limits and anything else: no client access.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
