@@ -6,4 +6,3 @@ export default handler(['GET'], async (req, res) => {
   const { uid, email, name } = await requireAuth(req)
   sendJson(res, 200, { uid, email, name })
 })
- 

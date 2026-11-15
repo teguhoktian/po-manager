@@ -13,7 +13,7 @@ export function PublicLayout() {
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6">
           <Logo tiny />
           <div className="flex items-center gap-2">
-            <Button to="/cek" size="sm" variant="ghost" className="hidden sm:inline-flex">
+            <Button to="/cek" size="sm" variant="ghost" className="max-sm:hidden">
               Cek pesanan
             </Button>
             <Button to="/login" size="sm" variant="ghost">
