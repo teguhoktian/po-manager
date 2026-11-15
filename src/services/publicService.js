@@ -35,5 +35,8 @@ async function post(path, body, signal) {
 /** Buyer's order status. POST so the secret token stays out of URLs and logs. */
 export const fetchPublicOrder = ({ storeSlug, orderNumber, token }, signal) => post('/api/public/order', { storeSlug, orderNumber, token }, signal)
 
+/** Order status from order number + the WhatsApp number used at checkout (no order link needed). */
+export const trackOrder = ({ orderNumber, whatsapp }, signal) => post('/api/public/track', { orderNumber, whatsapp }, signal)
+
 export const uploadPaymentProof = ({ storeSlug, orderNumber, token, image, note }) =>
   post('/api/public/payment-proof', { storeSlug, orderNumber, token, image, ...(note ? { note } : {}) })

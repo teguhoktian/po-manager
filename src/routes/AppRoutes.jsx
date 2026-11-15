@@ -13,6 +13,10 @@ import NotFoundPage from '../pages/public/NotFoundPage'
 const StorefrontPage = lazy(() => import('../pages/public/StorefrontPage'))
 const PoOrderPage = lazy(() => import('../pages/public/PoOrderPage'))
 const DashboardLayout = lazy(() => import('../layouts/DashboardLayout').then((m) => ({ default: m.DashboardLayout })))
+const TermsPage = lazy(() => import('../pages/public/legal/TermsPage'))
+const PrivacyPage = lazy(() => import('../pages/public/legal/PrivacyPage'))
+const ContactPage = lazy(() => import('../pages/public/ContactPage'))
+const TrackOrderPage = lazy(() => import('../pages/public/TrackOrderPage'))
 const OrderConfirmationPage = lazy(() => import('../pages/public/OrderConfirmationPage'))
 const OrdersPage = lazy(() => import('../pages/dashboard/OrdersPage'))
 const OrderDetailPage = lazy(() => import('../pages/dashboard/OrderDetailPage'))
@@ -34,6 +38,10 @@ export function AppRoutes() {
       <Routes>
         <Route element={<PublicLayout />}>
           <Route index element={<LandingPage />} />
+          <Route path="cek" element={<TrackOrderPage />} />
+          <Route path="syarat-ketentuan" element={<TermsPage />} />
+          <Route path="kebijakan-privasi" element={<PrivacyPage />} />
+          <Route path="kontak" element={<ContactPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
 

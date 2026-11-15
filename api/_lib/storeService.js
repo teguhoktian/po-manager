@@ -13,7 +13,7 @@ export async function createStore(db, uid, input) {
   await db.runTransaction(async (tx) => {
     const [storeSnap, slugSnap] = await Promise.all([tx.get(storeRef), tx.get(slugRef)])
     if (storeSnap.exists) throw new HttpError(409, 'Kamu sudah memiliki toko')
-    if (slugSnap.exists) throw new HttpError(409, 'Alamat toko sudah dipakai')
+    if (slugSnap.exists) throw new HttpError(409, 'Link toko sudah dipakai')
 
     const now = FieldValue.serverTimestamp()
     tx.set(slugRef, { sellerId: uid, createdAt: now })
@@ -46,7 +46,7 @@ export async function changeStoreSlug(db, uid, newSlug) {
 
     const oldRef = db.collection('store_slugs').doc(oldSlug)
     const [newSnap, oldSnap] = await Promise.all([tx.get(newRef), tx.get(oldRef)])
-    if (newSnap.exists) throw new HttpError(409, 'Alamat toko sudah dipakai')
+    if (newSnap.exists) throw new HttpError(409, 'Link toko sudah dipakai')
 
     const now = FieldValue.serverTimestamp()
     tx.set(newRef, { sellerId: uid, createdAt: now })

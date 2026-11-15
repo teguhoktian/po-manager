@@ -39,9 +39,9 @@ export function ConfirmDialog({
       onClick={(e) => {
         if (e.target === ref.current && !loading) onCancel?.()
       }}
-      className="m-0 mt-auto w-full max-w-none rounded-t-3xl bg-white p-0 backdrop:bg-slate-900/50 sm:m-auto sm:max-w-md sm:rounded-3xl"
+      className="sheet m-0 mt-auto w-full max-w-none rounded-t-[2rem] bg-white p-0 shadow-lift sm:m-auto sm:max-w-md sm:rounded-[2rem]"
     >
-      <div className="p-5 pb-safe sm:p-6">
+      <div className="p-5 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] sm:p-6">
         <h2 id={titleId} className="text-lg font-semibold text-slate-900">
           {title}
         </h2>

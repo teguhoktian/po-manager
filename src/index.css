@@ -75,6 +75,122 @@
   }
 }
 
+/* Motion: Material "emphasized" easing (fast out, long gentle settle), as on native Android / Flutter. */
+:root {
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --ease-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes sheet-down {
+  to {
+    transform: translateY(100%);
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+}
+
+.page-enter {
+  animation: page-in 360ms var(--ease-emphasized) both;
+}
+.anim-fade-in {
+  animation: fade-in 240ms linear both;
+}
+.anim-fade-out {
+  animation: fade-out 200ms linear both;
+}
+.anim-sheet-up {
+  animation: sheet-up 420ms var(--ease-emphasized) both;
+}
+.anim-sheet-down {
+  animation: sheet-down 240ms var(--ease-accelerate) both;
+}
+@media (min-width: 40rem) {
+  .anim-sheet-up {
+    animation: pop-in 320ms var(--ease-emphasized) both;
+  }
+  .anim-sheet-down {
+    animation: fade-out 180ms linear both;
+  }
+}
+
+/* Native <dialog>: slides up (mobile) / pops in (desktop) and animates out too. */
+dialog.sheet {
+  opacity: 0;
+  transform: translateY(100%);
+  transition:
+    transform 420ms var(--ease-emphasized),
+    opacity 200ms linear,
+    overlay 420ms allow-discrete,
+    display 420ms allow-discrete;
+}
+dialog.sheet[open] {
+  opacity: 1;
+  transform: none;
+}
+dialog.sheet::backdrop {
+  background-color: rgb(11 58 30 / 0);
+  backdrop-filter: blur(0);
+  transition:
+    background-color 300ms linear,
+    backdrop-filter 300ms linear,
+    overlay 300ms allow-discrete,
+    display 300ms allow-discrete;
+}
+dialog.sheet[open]::backdrop {
+  background-color: rgb(11 58 30 / 0.55);
+  backdrop-filter: blur(3px);
+}
+@starting-style {
+  dialog.sheet[open] {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  dialog.sheet[open]::backdrop {
+    background-color: rgb(11 58 30 / 0);
+    backdrop-filter: blur(0);
+  }
+}
+@media (min-width: 40rem) {
+  dialog.sheet {
+    transform: scale(0.92) translateY(12px);
+    transition-duration: 320ms, 200ms, 320ms, 320ms;
+  }
+  @starting-style {
+    dialog.sheet[open] {
+      transform: scale(0.92) translateY(12px);
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,

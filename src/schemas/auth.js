@@ -16,6 +16,7 @@ export const registerSchema = z
     email,
     password,
     confirmPassword: z.string(),
+    acceptTerms: z.boolean().refine((v) => v === true, 'Kamu harus menyetujui Syarat & Ketentuan dan Kebijakan Privasi'),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],

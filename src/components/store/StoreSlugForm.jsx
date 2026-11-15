@@ -30,19 +30,19 @@ export function StoreSlugForm({ store, onChanged }) {
 
   return (
     <Card>
-      <CardHeader title="Alamat toko" description="Mengubah alamat membuat link lama berhenti berfungsi." />
+      <CardHeader title="Link toko" description="Mengubah link membuat link lama berhenti berfungsi." />
       <CardBody>
         <form onSubmit={handleSubmit((values) => setPending(values))} noValidate className="space-y-4">
-          <Input label="Alamat" autoCapitalize="none" autoCorrect="off" error={errors.slug?.message} {...register('slug')} />
+          <Input label="Link toko" autoCapitalize="none" autoCorrect="off" error={errors.slug?.message} {...register('slug')} />
           <Button type="submit" variant="secondary" fullWidth disabled={!isDirty}>
-            Ubah alamat
+            Ubah link
           </Button>
         </form>
       </CardBody>
       <ConfirmDialog
         open={Boolean(pending)}
-        title="Ubah alamat toko?"
-        description="Link PO yang sudah dibagikan dengan alamat lama tidak akan bisa dibuka lagi."
+        title="Ubah link toko?"
+        description="Link PO yang sudah dibagikan dengan link lama tidak akan bisa dibuka lagi."
         confirmLabel="Ya, ubah"
         loading={saving}
         onConfirm={confirm}

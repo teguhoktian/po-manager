@@ -50,13 +50,24 @@ export function CheckoutForm({ onSubmit, onBack }) {
             <input type="text" name="website" tabIndex={-1} autoComplete="off" />
           </label>
         </div>
+        <p className="text-xs text-slate-500">
+          Dengan membuat pesanan, kamu menyetujui{' '}
+          <a href="/syarat-ketentuan" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand-700 underline">
+            Syarat &amp; Ketentuan
+          </a>{' '}
+          dan{' '}
+          <a href="/kebijakan-privasi" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand-700 underline">
+            Kebijakan Privasi
+          </a>
+          . Data pesananmu dikirim ke penjual untuk diproses.
+        </p>
         {serverError && (
           <p role="alert" className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
             {serverError}
           </p>
         )}
       </div>
-      <div className="pb-safe flex gap-2 border-t border-slate-100 px-5 py-4">
+      <div className="flex gap-2 border-t border-slate-100 px-5 pt-4 pb-[calc(env(safe-area-inset-bottom)+1.25rem)]">
         <Button variant="secondary" size="lg" onClick={onBack} disabled={isSubmitting}>
           Kembali
         </Button>

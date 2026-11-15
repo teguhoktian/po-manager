@@ -73,7 +73,7 @@ function PoView({ data, storeSlug, reload, notice, onNotice }) {
   const closeAt = order.closeAt ? new Date(order.closeAt) : null
 
   return (
-    <div className={`space-y-5 ${cart.totalQty > 0 ? 'pb-28' : ''}`}>
+    <div className={`space-y-5 ${cart.totalQty > 0 ? 'pb-32' : ''}`}>
       <title>{`${order.title} · ${store.name}`}</title>
       <StoreHeader store={store} to={`/po/${store.slug}`} compact />
       {notice && (

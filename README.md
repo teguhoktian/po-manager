@@ -72,3 +72,11 @@ Dokumentasi keamanan: `FIRESTORE_SECURITY_RULES.md`.
 - Palet hijau `#16a34a` (token `brand-*` di `src/index.css`), latar `canvas` kehijauan, font Plus Jakarta Sans (di-host sendiri lewat `@fontsource`, tanpa permintaan ke pihak luar), kartu lebih membulat dengan bayangan hijau lembut.
 - Halaman depan baru (contoh pengumuman PO di grup + nota pesanan), banner toko di Ringkasan, kartu statistik berwarna, bottom nav dengan penanda aktif, toko publik dengan header hijau, stepper bulat, dan keranjang melayang.
 - Hanya tampilan: alur, teks tombol, dan logika tidak berubah.
+
+## Pembaruan 15 Nov 2026
+- Link toko otomatis `nama-toko-kode` (4 karakter acak) agar tidak bentrok; toko lama tetap memakai slug lama.
+- `/cek`: pembeli melacak pesanan dengan kode pesanan + nomor WhatsApp (read-only; endpoint `POST /api/public/track`, rate limit per IP dan per kode).
+- Halaman `/syarat-ketentuan`, `/kebijakan-privasi`, `/kontak`; data perusahaan di `src/config/site.js`. Draf hukum perlu ditinjau advokat.
+- Checkbox persetujuan di pendaftaran; teks persetujuan di checkout.
+- Jarak atas/bawah storefront dan tombol modal diperbaiki (safe-area).
+- Animasi: transisi halaman, bottom sheet/dialog masuk-keluar (mengikuti prefers-reduced-motion).

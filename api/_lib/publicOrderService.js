@@ -44,7 +44,29 @@ async function paymentsOf(db, sellerId, orderId) {
 
 /** Buyer-facing order status. Whitelisted: no cost, no seller id, no proof paths. */
 export async function getPublicOrder(db, input) {
-  const { sellerId, store, orderId, order } = await findOrder(db, input)
+  return buildView(db, await findOrder(db, input))
+}
+
+/**
+ * Order lookup by order number + the WhatsApp number used at checkout (for buyers who lost their link).
+ * Same view as above, but read-only: no token exists here, so uploading a proof still needs the order link.
+ * A wrong number and an unknown order are indistinguishable (404).
+ */
+export async function trackPublicOrder(db, { orderNumber, whatsapp }) {
+  const snap = await db.collection('orders').where('orderNumber', '==', orderNumber).get()
+  const matches = snap.docs.filter((d) => d.data().customer?.whatsapp === whatsapp)
+  if (!matches.length) throw new HttpError(404, 'Pesanan tidak ditemukan. Periksa kode pesanan dan nomor WhatsApp.')
+  // Order numbers derive from the PO name, so two stores can share one. Never guess which order the buyer means.
+  if (matches.length > 1) throw new HttpError(409, 'Kode pesanan ini dipakai di lebih dari satu toko. Buka lewat link pesanan dari penjual.')
+  const doc = matches[0]
+  const order = doc.data()
+  const storeSnap = await db.collection('stores').doc(order.sellerId).get()
+  if (!storeSnap.exists) throw new HttpError(404, 'Pesanan tidak ditemukan. Periksa kode pesanan dan nomor WhatsApp.')
+  const view = await buildView(db, { sellerId: order.sellerId, store: storeSnap.data(), orderId: doc.id, order })
+  return { ...view, canUpload: false }
+}
+
+async function buildView(db, { sellerId, store, orderId, order }) {
   const shipped = [FULFILLMENT_STATUS.SHIPPED, FULFILLMENT_STATUS.COMPLETED].includes(order.fulfillmentStatus)
   const [payments, linesSnap, poSnap, shipmentSnap] = await Promise.all([
     paymentsOf(db, sellerId, orderId),

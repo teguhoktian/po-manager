@@ -1,4 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom'
+import { PageTransition } from '../components/layout/PageTransition'
 import { DashboardSidebar } from '../components/layout/DashboardSidebar'
 import { DashboardHeader } from '../components/layout/DashboardHeader'
 import { MobileBottomNav } from '../components/layout/MobileBottomNav'
@@ -14,7 +15,9 @@ export function DashboardLayout() {
       <div className="lg:pl-64">
         <DashboardHeader title={current?.label ?? 'Dashboard'} />
         <main className="mx-auto max-w-6xl px-4 pt-5 pb-24 sm:px-6 lg:pb-10">
-          <Outlet />
+          <PageTransition>
+            <Outlet />
+          </PageTransition>
         </main>
       </div>
       <MobileBottomNav />

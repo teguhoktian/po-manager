@@ -9,6 +9,15 @@ import { QtyStepper } from './QtyStepper'
 export function CartBar({ lines, totals, po, onChange, onClear, maxFor, onSubmitOrder }) {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState('cart')
+  const [closing, setClosing] = useState(false)
+  const close = () => {
+    setClosing(true)
+    setTimeout(() => {
+      setOpen(false)
+      setStep('cart')
+      setClosing(false)
+    }, 240)
+  }
   if (totals.quantity === 0) return null
 
   const belowMin = totals.quantity < po.minOrderQty
@@ -16,7 +25,7 @@ export function CartBar({ lines, totals, po, onChange, onClear, maxFor, onSubmit
 
   return (
     <>
-      <div className="pb-safe fixed inset-x-0 bottom-0 z-30 px-3 pb-3">
+      <div className="fixed inset-x-0 bottom-0 z-30 px-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
         <div className="mx-auto flex max-w-2xl items-center gap-3 rounded-3xl bg-brand-950 py-2.5 pr-2.5 pl-5 text-white shadow-lift">
           <button type="button" onClick={() => setOpen(true)} className="min-w-0 flex-1 text-left" aria-haspopup="dialog">
             <span className="flex items-center gap-1.5 text-xs text-brand-100">
@@ -33,27 +42,21 @@ export function CartBar({ lines, totals, po, onChange, onClear, maxFor, onSubmit
 
       {open && (
         <div
-          className="fixed inset-0 z-40 flex items-end justify-center bg-brand-950/60 backdrop-blur-sm sm:items-center"
-          onClick={() => {
-            setOpen(false)
-            setStep('cart')
-          }}
+          className={`fixed inset-0 z-40 flex items-end justify-center bg-brand-950/60 backdrop-blur-sm sm:items-center ${closing ? 'anim-fade-out' : 'anim-fade-in'}`}
+          onClick={close}
         >
           <div
             role="dialog"
             aria-modal="true"
             aria-label="Ringkasan pesanan"
             onClick={(e) => e.stopPropagation()}
-            className="pb-safe flex max-h-[90dvh] w-full max-w-lg flex-col rounded-t-[2rem] bg-white shadow-lift sm:rounded-[2rem]"
+            className={`flex max-h-[90dvh] w-full max-w-lg flex-col rounded-t-[2rem] bg-white shadow-lift sm:rounded-[2rem] ${closing ? 'anim-sheet-down' : 'anim-sheet-up'}`}
           >
             <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
               <h2 className="text-lg font-bold text-slate-900">{step === 'cart' ? 'Ringkasan pesanan' : 'Data pemesan'}</h2>
               <button
                 type="button"
-                onClick={() => {
-                  setOpen(false)
-                  setStep('cart')
-                }}
+                onClick={close}
                 aria-label="Tutup"
                 className="flex size-10 items-center justify-center rounded-full hover:bg-slate-100"
               >
@@ -78,7 +81,7 @@ export function CartBar({ lines, totals, po, onChange, onClear, maxFor, onSubmit
                   ))}
                 </ul>
 
-                <div className="space-y-2 border-t border-slate-100 px-5 py-4 text-sm">
+                <div className="space-y-2 border-t border-slate-100 px-5 pt-4 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] text-sm">
                   <Row label="Subtotal" value={formatRupiah(totals.subtotal)} strong />
                   {isDp && (
                     <>

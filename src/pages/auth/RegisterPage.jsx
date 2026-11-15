@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button, Input } from '../../components/ui'
+import { Button, Checkbox, Input } from '../../components/ui'
 import { registerSchema } from '../../schemas/auth'
 import { registerWithEmail } from '../../services/authService'
 
@@ -14,7 +14,7 @@ export default function RegisterPage() {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(registerSchema),
-    defaultValues: { displayName: '', email: '', password: '', confirmPassword: '' },
+    defaultValues: { displayName: '', email: '', password: '', confirmPassword: '', acceptTerms: false },
   })
 
   const onSubmit = async ({ displayName, email, password }) => {
@@ -56,6 +56,25 @@ export default function RegisterPage() {
         error={errors.confirmPassword?.message}
         {...register('confirmPassword')}
       />
+
+      <div>
+        <Checkbox
+          label={
+            <>
+              Saya setuju dengan{' '}
+              <Link to="/syarat-ketentuan" target="_blank" className="font-semibold text-brand-700 underline">
+                Syarat &amp; Ketentuan
+              </Link>{' '}
+              dan{' '}
+              <Link to="/kebijakan-privasi" target="_blank" className="font-semibold text-brand-700 underline">
+                Kebijakan Privasi
+              </Link>
+            </>
+          }
+          {...register('acceptTerms')}
+        />
+        {errors.acceptTerms && <p className="text-sm text-red-600">{errors.acceptTerms.message}</p>}
+      </div>
 
       <Button type="submit" fullWidth size="lg" loading={isSubmitting}>
         Daftar

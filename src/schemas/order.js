@@ -50,6 +50,9 @@ const orderNumber = z.string().trim().min(3).max(40)
 /** Buyer-side order lookup: order number + the secret token from the order link. */
 export const orderLookupSchema = z.strictObject({ storeSlug, orderNumber, token: accessToken })
 
+/** Buyer-side tracking without the order link: order number + the WhatsApp number used at checkout. */
+export const orderTrackSchema = z.strictObject({ orderNumber: orderNumber.transform((v) => v.toUpperCase()), whatsapp: whatsappNumber })
+
 export const MAX_PROOF_BYTES = 1_500_000
 
 /** Payment proof upload: image as base64 (the browser compresses it first). */
