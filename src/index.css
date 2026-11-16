@@ -119,7 +119,7 @@
 }
 
 .page-enter {
-  animation: page-in 360ms var(--ease-emphasized) both;
+  animation: page-in 360ms var(--ease-emphasized) backwards;
 }
 .anim-fade-in {
   animation: fade-in 240ms linear both;
