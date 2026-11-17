@@ -1,8 +1,7 @@
-import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore'
-import { db, storage } from '../firebase/data'
+import { db } from '../firebase/data'
 import { apiFetch } from './apiClient'
-import { IMAGE_CACHE_CONTROL, IMAGE_MAX_BYTES, SOURCE_MAX_BYTES } from './imageService'
+import { deleteImage, getImageUrl, IMAGE_MAX_BYTES, SOURCE_MAX_BYTES, uploadImage } from './imageService'
 import { optimizeImage } from '../lib/imageOptimize'
 const LOGO_TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }
 
@@ -39,18 +38,10 @@ export async function uploadStoreLogo(uid, original, previousPath) {
   const file = await optimizeImage(original, 'logo')
   if (file.size > IMAGE_MAX_BYTES) throw new Error('Logo masih terlalu besar setelah dikecilkan. Coba gambar lain.')
   const path = `sellers/${uid}/store/logo-${Date.now()}.${LOGO_TYPES[file.type]}`
-  await uploadBytes(ref(storage, path), file, { contentType: file.type, cacheControl: IMAGE_CACHE_CONTROL })
+  await uploadImage(path, file)
   await updateDoc(doc(db, 'stores', uid), { logoPath: path, updatedAt: serverTimestamp() })
-  if (previousPath) {
-    try {
-      await deleteObject(ref(storage, previousPath))
-    } catch {
-      // Orphaned old file is harmless.
-    }
-  }
+  if (previousPath) await deleteImage(previousPath) // best effort: an orphaned old file is harmless
   return path
 }
 
-export function getLogoUrl(path) {
-  return getDownloadURL(ref(storage, path))
-}
+export const getLogoUrl = getImageUrl

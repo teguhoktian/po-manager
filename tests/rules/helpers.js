@@ -9,7 +9,6 @@ export async function createEnv() {
   return initializeTestEnvironment({
     projectId: 'demo-po',
     firestore: { rules: readFileSync('firestore.rules', 'utf8'), host: '127.0.0.1', port: 8080 },
-    storage: { rules: readFileSync('storage.rules', 'utf8'), host: '127.0.0.1', port: 9199 },
   })
 }
 

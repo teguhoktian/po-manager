@@ -1,5 +1,6 @@
 import { PO_STATUS } from '../../src/constants/statuses.js'
 import { effectiveState } from '../../src/lib/poState.js'
+import { ownerOf, publicFileUrl } from './fileStore.js'
 import { HttpError } from './http.js'
 
 export { effectiveState }
@@ -18,12 +19,10 @@ const iso = (v) => {
 
 const LISTED = [PO_STATUS.SCHEDULED, PO_STATUS.OPEN, PO_STATUS.CLOSED, PO_STATUS.PROCESSING, PO_STATUS.COMPLETED]
 
-/** Public Storage URL for an image the seller owns. Anything else (other tenant, traversal) is dropped. */
-export function publicImageUrl(path, sellerId, bucket) {
-  if (!bucket || typeof path !== 'string') return null
-  const prefix = `sellers/${sellerId}/`
-  if (!path.startsWith(prefix) || path.includes('..') || path.length > 300) return null
-  return `https://firebasestorage.googleapis.com/v0/b/${encodeURIComponent(bucket)}/o/${encodeURIComponent(path)}?alt=media`
+/** Public URL for an image the seller owns. Anything else (other tenant, traversal, private proofs) is dropped. */
+export function publicImageUrl(path, sellerId) {
+  if (ownerOf(path) !== sellerId) return null
+  return publicFileUrl(path)
 }
 
 const remainingQuota = (po) => (po.quota == null ? null : Math.max(0, po.quota - (po.orderedQty ?? 0)))
@@ -44,7 +43,7 @@ function poSummary(id, po, now) {
   }
 }
 
-async function loadStore(db, storeSlug, bucket) {
+async function loadStore(db, storeSlug) {
   const slugSnap = await db.collection('store_slugs').doc(storeSlug).get()
   const sellerId = slugSnap.exists ? slugSnap.data().sellerId : null
   const storeSnap = sellerId ? await db.collection('stores').doc(sellerId).get() : null
@@ -59,14 +58,14 @@ async function loadStore(db, storeSlug, bucket) {
       slug: s.slug,
       description: s.description ?? '',
       whatsappNumber: s.whatsappNumber ?? null,
-      logoUrl: s.logoPath ? publicImageUrl(s.logoPath, sellerId, bucket) : null,
+      logoUrl: s.logoPath ? publicImageUrl(s.logoPath, sellerId) : null,
     },
   }
 }
 
 /** Store profile + its listed POs (newest first). */
-export async function getPublicStore(db, { storeSlug, now = new Date(), bucket }) {
-  const { sellerId, store } = await loadStore(db, storeSlug, bucket)
+export async function getPublicStore(db, { storeSlug, now = new Date() }) {
+  const { sellerId, store } = await loadStore(db, storeSlug)
   const snap = await db.collection('purchase_orders').where('sellerId', '==', sellerId).where('status', 'in', LISTED).get()
   const rank = { OPEN: 0, UPCOMING: 1, FULL: 2, CLOSED: 3 }
   const orders = snap.docs
@@ -77,8 +76,8 @@ export async function getPublicStore(db, { storeSlug, now = new Date(), bucket }
 }
 
 /** One PO with its sellable items grouped per product. */
-export async function getPublicPO(db, { storeSlug, poSlug, now = new Date(), bucket }) {
-  const { sellerId, store } = await loadStore(db, storeSlug, bucket)
+export async function getPublicPO(db, { storeSlug, poSlug, now = new Date() }) {
+  const { sellerId, store } = await loadStore(db, storeSlug)
 
   const poSnap = await db.collection('purchase_orders').where('sellerId', '==', sellerId).where('slug', '==', poSlug).get()
   const live = poSnap.docs.filter((d) => LISTED.includes(d.data().status))
@@ -116,7 +115,7 @@ export async function getPublicPO(db, { storeSlug, poSlug, now = new Date(), buc
         productId: item.productId,
         name: product.name,
         description: product.description ?? '',
-        images: (product.imagePaths ?? []).map((p) => publicImageUrl(p, sellerId, bucket)).filter(Boolean),
+        images: (product.imagePaths ?? []).map((p) => publicImageUrl(p, sellerId)).filter(Boolean),
         options: [],
       })
     }

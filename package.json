@@ -9,7 +9,7 @@
     "lint": "oxlint",
     "check:functions": "node scripts/checkFunctions.js",
     "preview": "vite preview",
-    "test:rules": "npx firebase-tools emulators:exec --only firestore,storage --project demo-po \"node --test tests/rules/\""
+    "test:rules": "npx firebase-tools emulators:exec --only firestore --project demo-po \"node --test tests/rules/firestore.test.js\""
   },
   "dependencies": {
     "@fontsource-variable/plus-jakarta-sans": "^5.3.0",

@@ -4,7 +4,7 @@ import { loadEnv } from 'vite'
 
 /**
  * Dev-only: serve ./api/* handlers (Vercel-style) from `vite dev`, so `npm run dev` works full-stack
- * without the Vercel CLI. Production uses Vercel Functions directly; this plugin never runs in builds.
+ * without a separate server. Production uses server/index.js; this plugin never runs in builds.
  */
 export function devApiPlugin() {
   let root = process.cwd()
@@ -86,8 +86,11 @@ async function readBody(req) {
     if (size > 3_000_000) throw new Error('Body too large')
     chunks.push(chunk)
   }
-  const text = Buffer.concat(chunks).toString('utf8')
-  if (!text) return undefined
+  const raw = Buffer.concat(chunks)
+  if (!raw.length) return undefined
+  // Binary uploads (images) reach the handler as a Buffer, like on Vercel.
+  if (req.headers['content-type']?.startsWith('application/octet-stream')) return raw
+  const text = raw.toString('utf8')
   try {
     return JSON.parse(text)
   } catch {

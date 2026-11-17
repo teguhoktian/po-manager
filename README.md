@@ -23,7 +23,9 @@ Isi variabel server di `.env` agar endpoint bisa memverifikasi token dan menulis
 FIREBASE_PROJECT_ID=...
 FIREBASE_CLIENT_EMAIL=...      # dari service account (Firebase Console > Project settings > Service accounts)
 FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
-FIREBASE_STORAGE_BUCKET=...    # mis. nama-proyek.firebasestorage.app (agar foto produk tampil di halaman publik)
+SUPABASE_URL=...               # Project URL Supabase (gambar disimpan di Supabase Storage)
+SUPABASE_SERVICE_ROLE_KEY=...  # rahasia, hanya di server/Vercel (lihat DEPLOY.md bagian 1b)
+VITE_SUPABASE_URL=...          # nilai yang sama dengan SUPABASE_URL (publik)
 ```
 
 Restart `npm run dev` setelah mengubah `.env`. Di produksi, isi variabel yang sama di Vercel (Project > Settings > Environment Variables).
@@ -31,8 +33,9 @@ Restart `npm run dev` setelah mengubah `.env`. Di produksi, isi variabel yang sa
 ### Setup Firebase
 1. Aktifkan Authentication > Email/Password.
 2. Tambahkan domain lokal/Vercel ke Authorized domains.
-3. Buat Firestore dan Storage, lalu deploy rules dan indeks:
-   `npx firebase-tools deploy --only firestore:rules,firestore:indexes,storage`
+3. Buat Firestore, lalu deploy rules dan indeks:
+   `npx firebase-tools deploy --only firestore:rules,firestore:indexes`
+   Gambar memakai Supabase Storage: buat bucket `po-public` (publik) dan `po-private` (privat), lihat DEPLOY.md bagian 1b.
 4. (Opsional) Daftarkan App Check (reCAPTCHA v3) dan isi `VITE_FIREBASE_APPCHECK_SITE_KEY`.
 
 ## Perintah
@@ -63,7 +66,7 @@ Dokumentasi keamanan: `FIRESTORE_SECURITY_RULES.md`.
 
 ## Fase 13: Hardening dan rilis
 
-- Foto produk dan logo dikecilkan di browser (WebP, sisi terpanjang 1200/400 px, target ~200/60 KB) dan diunggah dengan `cache-control` setahun. Menghemat egress Storage.
+- Foto produk dan logo dikecilkan di browser (WebP, sisi terpanjang 1200/400 px, target ~200/60 KB) dan diunggah lewat `PUT /api/files` (server memeriksa pemilik path, isi file, dan ukuran sebelum menyimpan ke Supabase) dengan `cache-control` setahun. Bukti bayar disimpan di bucket privat dan dibuka lewat link bertanda tangan 5 menit.
 - Cron harian `/api/cron/po-sweep` (dilindungi `CRON_SECRET`) membuka PO terjadwal dan menutup PO yang lewat batas waktu; audit oleh `system`.
 - Panduan lengkap deploy, App Check, TTL, dan uji asap: lihat `DEPLOY.md`.
 
