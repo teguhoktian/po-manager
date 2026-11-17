@@ -31,7 +31,7 @@ VITE_SUPABASE_URL=...          # nilai yang sama dengan SUPABASE_URL (publik)
 Restart `npm run dev` setelah mengubah `.env`. Di produksi, isi variabel yang sama di Vercel (Project > Settings > Environment Variables).
 
 ### Setup Firebase
-1. Aktifkan Authentication > Email/Password.
+1. Aktifkan Authentication > Email/Password dan Google (lihat DEPLOY.md bagian 1a).
 2. Tambahkan domain lokal/Vercel ke Authorized domains.
 3. Buat Firestore, lalu deploy rules dan indeks:
    `npx firebase-tools deploy --only firestore:rules,firestore:indexes`

@@ -10,6 +10,8 @@ export const loginSchema = z.object({
   password: z.string().min(1, 'Kata sandi wajib diisi').max(128),
 })
 
+export const forgotPasswordSchema = z.object({ email })
+
 export const registerSchema = z
   .object({
     displayName: z.string().trim().min(2, 'Nama minimal 2 karakter').max(60, 'Nama maksimal 60 karakter'),

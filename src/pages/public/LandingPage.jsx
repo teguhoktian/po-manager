@@ -132,6 +132,9 @@ export default function LandingPage() {
             </li>
           ))}
         </ol>
+        <Button to="/cara-pakai" variant="secondary" className="mt-8">
+          Baca panduan lengkap
+        </Button>
       </section>
 
       <section className="border-y border-green-900/10 bg-white">

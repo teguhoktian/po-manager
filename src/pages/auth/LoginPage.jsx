@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button, Input } from '../../components/ui'
+import { Button, Input, PasswordInput } from '../../components/ui'
+import { GoogleSignIn } from '../../components/auth/GoogleSignIn'
 import { loginSchema } from '../../schemas/auth'
 import { loginWithEmail } from '../../services/authService'
 
@@ -38,11 +39,20 @@ export default function LoginPage() {
       )}
 
       <Input label="Email" type="email" autoComplete="email" inputMode="email" error={errors.email?.message} {...register('email')} />
-      <Input label="Kata sandi" type="password" autoComplete="current-password" error={errors.password?.message} {...register('password')} />
+      <div>
+        <PasswordInput label="Kata sandi" autoComplete="current-password" error={errors.password?.message} {...register('password')} />
+        <div className="mt-2 text-right">
+          <Link to="/lupa-password" className="text-sm font-semibold text-brand-700 hover:underline">
+            Lupa kata sandi?
+          </Link>
+        </div>
+      </div>
 
       <Button type="submit" fullWidth size="lg" loading={isSubmitting}>
         Masuk
       </Button>
+
+      <GoogleSignIn label="Masuk dengan Google" />
 
       <p className="text-center text-sm text-slate-600">
         Belum punya akun?{' '}

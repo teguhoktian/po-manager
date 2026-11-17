@@ -1,6 +1,7 @@
 export { Button } from './Button'
 export { Card, CardHeader, CardBody } from './Card'
 export { Input } from './Input'
+export { PasswordInput } from './PasswordInput'
 export { Badge } from './Badge'
 export { Skeleton } from './Skeleton'
 export { EmptyState } from './EmptyState'

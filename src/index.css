@@ -199,3 +199,9 @@ dialog.sheet[open]::backdrop {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Edge draws its own reveal icon in password fields; the app provides one, so hide the duplicate. */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}

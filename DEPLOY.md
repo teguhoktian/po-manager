@@ -8,6 +8,14 @@ Urutan ini penting: ikuti dari atas ke bawah. Jangan pernah commit `.env` atau k
 3. **Project settings → Service accounts → Generate new private key** → isi `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`.
 4. Authentication → Settings → **Authorized domains**: tambahkan domain Vercel dan domain kustom `pohub.web.id` (dan `www.pohub.web.id` bila dipakai). Daftarkan juga `pohub.web.id` di pengaturan domain reCAPTCHA/App Check.
 
+## 1a. Metode login dan email reset kata sandi
+1. Authentication → Sign-in method → aktifkan **Email/Password**.
+2. Aktifkan juga **Google**: pilih Google, ketuk Enable, isi *Project support email*, simpan. Tanpa ini tombol "Masuk dengan Google" menampilkan pesan bahwa Google belum diaktifkan.
+3. Login Google memakai jendela pop-up ke domain di `VITE_FIREBASE_AUTH_DOMAIN`. Domain aplikasi (`pohub.web.id`) wajib ada di **Authorized domains** (langkah 4 di atas), kalau tidak muncul pesan "Domain ini belum diizinkan".
+4. Authentication → Templates → **Password reset**: ubah bahasa ke Indonesia dan sesuaikan nama pengirim/subjek bila mau. Email reset dikirim Firebase dari alamat bawaan proyek (`noreply@<project>.firebaseapp.com`); cek folder spam saat mencoba pertama kali.
+5. Halaman `/lupa-password` mengirim email lewat Firebase. Tidak ada endpoint server tambahan dan jumlah fungsi Vercel tetap 9/12.
+6. Content-Security-Policy di `vercel.json` sudah mengizinkan `https://apis.google.com` (skrip yang dibutuhkan login pop-up Google). Jangan dihapus.
+
 ## 1b. Supabase Storage (gambar, sekali saja)
 1. Buat project di supabase.com (paket gratis, tanpa kartu). Catat **Project URL** (`https://xxxx.supabase.co`).
 2. Storage → **New bucket**, buat dua bucket dengan nama persis:

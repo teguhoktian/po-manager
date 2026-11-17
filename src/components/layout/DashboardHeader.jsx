@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { LogOut } from 'lucide-react'
+import { CircleHelp, LogOut } from 'lucide-react'
 import { Logo } from './Logo'
 import { ConfirmDialog } from '../ui'
 import { useAuth } from '../../hooks/useAuth'
@@ -37,6 +37,15 @@ export function DashboardHeader({ title }) {
           >
             {initial}
           </span>
+          <a
+            href="/cara-pakai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex size-11 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100"
+            aria-label="Cara pakai (buka di tab baru)"
+          >
+            <CircleHelp className="size-5" aria-hidden="true" />
+          </a>
           <button
             type="button"
             onClick={() => setConfirming(true)}

@@ -17,12 +17,14 @@ const TermsPage = lazy(() => import('../pages/public/legal/TermsPage'))
 const PrivacyPage = lazy(() => import('../pages/public/legal/PrivacyPage'))
 const ContactPage = lazy(() => import('../pages/public/ContactPage'))
 const TrackOrderPage = lazy(() => import('../pages/public/TrackOrderPage'))
+const HelpPage = lazy(() => import('../pages/public/HelpPage'))
 const OrderConfirmationPage = lazy(() => import('../pages/public/OrderConfirmationPage'))
 const OrdersPage = lazy(() => import('../pages/dashboard/OrdersPage'))
 const OrderDetailPage = lazy(() => import('../pages/dashboard/OrderDetailPage'))
 const AuthShell = lazy(() => import('./AuthShell'))
 const LoginPage = lazy(() => import('../pages/auth/LoginPage'))
 const RegisterPage = lazy(() => import('../pages/auth/RegisterPage'))
+const ForgotPasswordPage = lazy(() => import('../pages/auth/ForgotPasswordPage'))
 const PaymentsPage = lazy(() => import('../pages/dashboard/PaymentsPage'))
 const ReportsPage = lazy(() => import('../pages/dashboard/ReportsPage'))
 const OverviewPage = lazy(() => import('../pages/dashboard/OverviewPage'))
@@ -39,6 +41,7 @@ export function AppRoutes() {
         <Route element={<PublicLayout />}>
           <Route index element={<LandingPage />} />
           <Route path="cek" element={<TrackOrderPage />} />
+          <Route path="cara-pakai" element={<HelpPage />} />
           <Route path="syarat-ketentuan" element={<TermsPage />} />
           <Route path="kebijakan-privasi" element={<PrivacyPage />} />
           <Route path="kontak" element={<ContactPage />} />
@@ -56,6 +59,7 @@ export function AppRoutes() {
             <Route element={<AuthLayout />}>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/lupa-password" element={<ForgotPasswordPage />} />
             </Route>
           </Route>
 

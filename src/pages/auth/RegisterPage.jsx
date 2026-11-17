@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button, Checkbox, Input } from '../../components/ui'
+import { Button, Checkbox, Input, PasswordInput } from '../../components/ui'
+import { GoogleSignIn } from '../../components/auth/GoogleSignIn'
 import { registerSchema } from '../../schemas/auth'
 import { registerWithEmail } from '../../services/authService'
 
@@ -41,17 +42,15 @@ export default function RegisterPage() {
 
       <Input label="Nama" autoComplete="name" error={errors.displayName?.message} {...register('displayName')} />
       <Input label="Email" type="email" autoComplete="email" inputMode="email" error={errors.email?.message} {...register('email')} />
-      <Input
+      <PasswordInput
         label="Kata sandi"
-        type="password"
         autoComplete="new-password"
         hint="Minimal 8 karakter."
         error={errors.password?.message}
         {...register('password')}
       />
-      <Input
+      <PasswordInput
         label="Ulangi kata sandi"
-        type="password"
         autoComplete="new-password"
         error={errors.confirmPassword?.message}
         {...register('confirmPassword')}
@@ -79,6 +78,8 @@ export default function RegisterPage() {
       <Button type="submit" fullWidth size="lg" loading={isSubmitting}>
         Daftar
       </Button>
+
+      <GoogleSignIn label="Daftar dengan Google" />
 
       <p className="text-center text-sm text-slate-600">
         Sudah punya akun?{' '}

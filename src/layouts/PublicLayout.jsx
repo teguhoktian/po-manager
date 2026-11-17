@@ -13,6 +13,9 @@ export function PublicLayout() {
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6">
           <Logo tiny />
           <div className="flex items-center gap-2">
+            <Button to="/cara-pakai" size="sm" variant="ghost" className="max-sm:hidden">
+              Cara pakai
+            </Button>
             <Button to="/cek" size="sm" variant="ghost" className="max-sm:hidden">
               Cek pesanan
             </Button>
@@ -44,6 +47,9 @@ export function PublicLayout() {
             </p>
           </div>
           <nav aria-label="Tautan" className="flex flex-col gap-2 sm:items-end">
+            <Link to="/cara-pakai" className="font-medium hover:text-brand-700">
+              Cara pakai
+            </Link>
             <Link to="/cek" className="font-medium hover:text-brand-700">
               Cek pesanan
             </Link>
