@@ -64,7 +64,7 @@ export default function ProductsPage() {
       </div>
 
       {loading ? (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
           {[0, 1, 2].map((i) => (
             <Card key={i}><CardBody className="flex gap-3"><Skeleton className="size-20" /><div className="flex-1 space-y-2"><Skeleton className="h-5 w-2/3" /><Skeleton className="h-4 w-1/3" /></div></CardBody></Card>
           ))}
@@ -72,7 +72,7 @@ export default function ProductsPage() {
       ) : error ? (
         <Card><ErrorState description={error} onRetry={reload} /></Card>
       ) : visible.length ? (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {visible.map((product) => <ProductCard key={product.id} product={product} />)}
         </div>
       ) : (

@@ -30,7 +30,7 @@ export default function StorePage() {
   if (!store) return <div className="mx-auto max-w-xl"><StoreCreateForm onCreated={reload} /></div>
 
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <div className="space-y-4">
         <StoreLogoUploader store={store} onUploaded={reload} />
         <StoreProfileForm key={store.updatedAt?.seconds ?? 'p'} store={store} onSaved={reload} />

@@ -93,11 +93,11 @@ export function PoForm({ uid, po, onSaved }) {
       <Card>
         <CardHeader title="Jadwal dan kuota" />
         <CardBody className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input label="Dibuka" type="datetime-local" error={errors.openAt?.message} {...register('openAt')} />
             <Input label="Ditutup" type="datetime-local" error={errors.closeAt?.message} {...register('closeAt')} />
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input
               label="Kuota (unit)"
               type="number" inputMode="numeric" min={1} step={1}

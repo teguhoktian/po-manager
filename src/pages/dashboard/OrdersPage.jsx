@@ -104,7 +104,7 @@ export default function OrdersPage({ mode }) {
         ))}
       </div>
 
-      <div className="grid gap-2 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         <label className="relative block sm:col-span-1">
           <span className="sr-only">Cari pesanan</span>
           <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
@@ -183,7 +183,7 @@ export default function OrdersPage({ mode }) {
       ) : error ? (
         <Card><ErrorState description={error} onRetry={reload} /></Card>
       ) : visible.length ? (
-        <div className="grid gap-3 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
           {visible.map((o) => (
             <OrderCard
               key={o.id}

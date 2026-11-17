@@ -16,7 +16,7 @@ function Section({ title, hint, orders, poTitles, pending }) {
         </h3>
         {hint && <p className="text-sm text-slate-600">{hint}</p>}
       </div>
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
         {orders.map((o) => (
           <OrderCard key={o.id} order={o} poTitle={poTitles.get(o.poId)} pendingProof={pending.has(o.id)} />
         ))}
