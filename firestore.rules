@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// PO Manager — Firestore security rules.
+// PO Hub — Firestore security rules.
 // Model: default deny. Every business document carries `sellerId` (= owner's Firebase UID).
 // Sellers may write only their own catalog/PO drafts. Orders, payments, shipments, audit logs and all
 // financial counters are written exclusively by the server (Admin SDK bypasses rules).

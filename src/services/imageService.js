@@ -18,7 +18,7 @@ export const imageExtension = (file) => TYPES[file.type]
 /** `file` must already be optimized (see optimizeImage); it is checked against the server limit. */
 export async function uploadImage(path, file) {
   validateImageFile(file)
-  if (file.size > IMAGE_MAX_BYTES) throw new Error('Gambar masih terlalu besar setelah dikecilkan. Coba foto lain.')
+  if (file.size > IMAGE_MAX_BYTES) throw new Error('Ukuran gambar terlalu besar. Coba foto lain.')
   await apiUpload(`/api/files?path=${encodeURIComponent(path)}`, file)
   return path
 }

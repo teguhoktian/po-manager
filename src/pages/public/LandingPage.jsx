@@ -48,7 +48,7 @@ function ChatMock() {
             <p className="font-bold text-slate-900">PO Brownies Panggang dibuka!</p>
             <p className="mt-0.5 text-slate-700">Tutup Jumat jam 20.00. Pesan lewat link di bawah ya.</p>
             <div className="mt-2 rounded-xl border-l-4 border-brand-600 bg-brand-50 p-2">
-              <p className="text-xs font-bold text-brand-800">po-manager.app/po/dapurkita</p>
+              <p className="text-xs font-bold text-brand-800">pohub.web.id/po/dapurkita</p>
               <p className="text-xs text-slate-600">Sisa kuota 18 · mulai Rp 85.000</p>
             </div>
             <p className="mt-1 text-right text-[10px] text-slate-400">09.12</p>

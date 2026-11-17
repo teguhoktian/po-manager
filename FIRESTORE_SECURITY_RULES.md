@@ -1,4 +1,4 @@
-# Firestore & Storage Security Architecture — PO Manager
+# Firestore & Storage Security Architecture — PO Hub
 
 Files: `firestore.rules`, `storage.rules`, `firestore.indexes.json`, `firebase.json`.
 Shared vocabularies: `src/constants/statuses.js`, `src/constants/collections.js`. Client validation mirrors the rules in `src/schemas/*`.

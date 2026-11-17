@@ -10,7 +10,7 @@ export function devApiPlugin() {
   let root = process.cwd()
 
   return {
-    name: 'po-manager:dev-api',
+    name: 'po-hub:dev-api',
     apply: 'serve',
     configResolved(config) {
       root = config.root

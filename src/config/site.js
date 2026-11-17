@@ -1,5 +1,7 @@
 export const SITE = {
-  name: 'PO Manager',
+  name: 'PO Hub',
+  domain: 'pohub.web.id',
+  url: 'https://pohub.web.id',
   tagline: 'Kelola pre-order WhatsApp Group tanpa ribet',
 }
 

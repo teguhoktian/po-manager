@@ -36,7 +36,7 @@ export function validateLogoFile(file) {
 export async function uploadStoreLogo(uid, original, previousPath) {
   validateLogoFile(original)
   const file = await optimizeImage(original, 'logo')
-  if (file.size > IMAGE_MAX_BYTES) throw new Error('Logo masih terlalu besar setelah dikecilkan. Coba gambar lain.')
+  if (file.size > IMAGE_MAX_BYTES) throw new Error('Ukuran logo terlalu besar. Coba gambar lain.')
   const path = `sellers/${uid}/store/logo-${Date.now()}.${LOGO_TYPES[file.type]}`
   await uploadImage(path, file)
   await updateDoc(doc(db, 'stores', uid), { logoPath: path, updatedAt: serverTimestamp() })

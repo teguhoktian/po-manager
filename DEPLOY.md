@@ -1,4 +1,4 @@
-# Panduan Deploy PO Manager
+# Panduan Deploy PO Hub
 
 Urutan ini penting: ikuti dari atas ke bawah. Jangan pernah commit `.env` atau kunci service account.
 
@@ -6,7 +6,7 @@ Urutan ini penting: ikuti dari atas ke bawah. Jangan pernah commit `.env` atau k
 1. Buat project Firebase. Aktifkan **Authentication** (metode login yang dipakai aplikasi), **Firestore** (mode production, region `asia-southeast2` Jakarta), (paket gratis Spark cukup; **Firebase Storage tidak dipakai lagi**, gambar ada di Supabase, lihat bagian 1b).
 2. Daftarkan **Web app** → salin config ke variabel `VITE_FIREBASE_*` (lihat `.env.example`).
 3. **Project settings → Service accounts → Generate new private key** → isi `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`.
-4. Authentication → Settings → **Authorized domains**: tambahkan domain Vercel dan domain kustom.
+4. Authentication → Settings → **Authorized domains**: tambahkan domain Vercel dan domain kustom `pohub.web.id` (dan `www.pohub.web.id` bila dipakai). Daftarkan juga `pohub.web.id` di pengaturan domain reCAPTCHA/App Check.
 
 ## 1b. Supabase Storage (gambar, sekali saja)
 1. Buat project di supabase.com (paket gratis, tanpa kartu). Catat **Project URL** (`https://xxxx.supabase.co`).

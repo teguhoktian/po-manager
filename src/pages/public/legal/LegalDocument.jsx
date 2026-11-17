@@ -64,7 +64,7 @@ export function LegalDocument({ title, intro, sections }) {
             Kontak
           </Link>
         </p>
-        <p className="mt-2 text-xs text-slate-500">{SITE.name} dioperasikan oleh {COMPANY.name}.</p>
+        <p className="mt-2 text-xs text-slate-500">{SITE.name} ({SITE.domain}) dioperasikan oleh {COMPANY.name}.</p>
       </div>
     </div>
   )

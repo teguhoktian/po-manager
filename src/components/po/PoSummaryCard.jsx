@@ -48,7 +48,6 @@ export function PoSummaryCard({ po, storeSlug }) {
           <div className="space-y-2 border-t border-slate-100 pt-4">
             <p className="text-sm font-medium text-slate-700">Link PO</p>
             <p className="rounded-xl bg-slate-50 px-3.5 py-3 text-sm break-all text-slate-700">{url}</p>
-            <p className="text-xs text-slate-500">Halaman pemesanan publik tersedia di fase berikutnya.</p>
             <div className="flex flex-col gap-2 sm:flex-row">
               <Button variant="secondary" onClick={copy} className="sm:flex-1">
                 {copied ? <Check className="size-4" aria-hidden="true" /> : <Copy className="size-4" aria-hidden="true" />}

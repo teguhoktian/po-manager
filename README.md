@@ -1,4 +1,4 @@
-# PO Manager
+# PO Hub
 
 SaaS pre-order (PO) untuk penjual individu via WhatsApp Group. React + Vite + Tailwind, Firebase, Vercel.
 

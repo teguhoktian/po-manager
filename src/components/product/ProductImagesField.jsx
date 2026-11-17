@@ -47,7 +47,7 @@ export function ProductImagesField({ images, onChange }) {
       <div className="mb-1.5 flex items-baseline justify-between">
         <span className="text-sm font-medium text-slate-700">Gambar produk</span>
         <span className="text-xs text-slate-500">
-          {images.length}/{MAX_IMAGES} · JPG, PNG, WebP · otomatis dikecilkan
+          {images.length}/{MAX_IMAGES} · JPG, PNG, WebP
         </span>
       </div>
 

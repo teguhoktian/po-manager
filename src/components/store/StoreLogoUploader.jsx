@@ -41,7 +41,7 @@ export function StoreLogoUploader({ store, onUploaded }) {
 
   return (
     <Card>
-      <CardHeader title="Logo toko" description="JPG, PNG, atau WebP. Otomatis dikecilkan sebelum diunggah." />
+      <CardHeader title="Logo toko" description="JPG, PNG, atau WebP. Gunakan gambar persegi agar tampil pas." />
       <CardBody className="flex items-center gap-4">
         <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-brand-50 text-brand-600">
           {shownUrl ? <img src={shownUrl} alt={`Logo ${store.name}`} className="size-full object-cover" /> : <Store className="size-8" aria-hidden="true" />}
