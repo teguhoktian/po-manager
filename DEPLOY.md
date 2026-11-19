@@ -16,6 +16,16 @@ Urutan ini penting: ikuti dari atas ke bawah. Jangan pernah commit `.env` atau k
 5. Halaman `/lupa-password` mengirim email lewat Firebase. Tidak ada endpoint server tambahan dan jumlah fungsi Vercel tetap 9/12.
 6. Content-Security-Policy di `vercel.json` sudah mengizinkan `https://apis.google.com` (skrip yang dibutuhkan login pop-up Google). Jangan dihapus.
 
+## 1c. SEO dan Google Search Console
+Perintah `npm run build` sekarang juga membuat HTML statis untuk halaman publik (beranda, cara pakai, kontak, syarat, privasi), `sitemap.xml`, `404.html`, dan `app.html` (cangkang aplikasi untuk login, dashboard, dan halaman toko). Pengaturan Vercel tidak perlu diubah: build command bawaan memakai `npm run build`, output `dist`.
+1. Di Vercel → Domains, tambahkan `pohub.web.id` **dan** `www.pohub.web.id`. Aturan di `vercel.json` mengalihkan `www` ke `pohub.web.id` secara permanen.
+2. Buka search.google.com/search-console → tambah properti **Domain** `pohub.web.id` → verifikasi lewat DNS TXT.
+3. Sitemaps → kirim `https://pohub.web.id/sitemap.xml`.
+4. URL Inspection → periksa `https://pohub.web.id/` → **Request indexing**. Ulangi untuk `/cara-pakai`.
+5. Setelah deploy, cek pratinjau link di WhatsApp dengan mengirim `https://pohub.web.id` ke diri sendiri. Kalau pratinjau lama masih muncul, itu cache WhatsApp; coba lagi nanti atau tambahkan `?v=2` ke link untuk pengujian.
+6. Halaman toko (`/po/...`), dashboard, dan API sengaja tidak diindeks (`robots.txt`). Halaman login, daftar, dan cek pesanan memakai `noindex`.
+7. Menambah halaman publik baru: daftarkan di `SEO_PAGES` (`src/config/seo.js`) supaya ikut diprerender dan masuk sitemap, dan tambahkan rute statisnya jika bukan halaman publik biasa (lihat `rewrites` di `vercel.json`).
+
 ## 1b. Supabase Storage (gambar, sekali saja)
 1. Buat project di supabase.com (paket gratis, tanpa kartu). Catat **Project URL** (`https://xxxx.supabase.co`).
 2. Storage → **New bucket**, buat dua bucket dengan nama persis:
@@ -67,3 +77,20 @@ Console → Firestore → **TTL** → buat dua kebijakan, field `expiresAt`:
 ## 8. Batasan yang diketahui
 - Laporan dihitung di browser (maks. 500 pesanan dan 2000 baris per PO).
 - Pembeli tidak mendapat notifikasi otomatis; penjual memakai tombol WhatsApp (click-to-chat).
+
+## Menambah artikel
+
+1. Buat file baru di `content/articles/`, misalnya `judul-artikel.md`. Nama file menjadi alamat: `/artikel/judul-artikel`.
+2. Awali dengan frontmatter:
+
+```
+---
+title: Judul artikel (usahakan di bawah 60 karakter)
+description: Ringkasan satu kalimat, maksimal 160 karakter.
+date: 2026-11-19
+urutan: 6
+---
+```
+
+3. Tulis isinya dengan Markdown (`##` untuk subjudul, tabel, daftar, tautan). Jangan pakai `#`, karena judul sudah dibuat dari `title`.
+4. Commit dan push. Halaman, sitemap, dan data terstruktur dibuat otomatis saat build. Setelah live, kirim URL baru lewat Inspeksi URL di Search Console.

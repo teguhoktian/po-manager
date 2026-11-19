@@ -2,6 +2,7 @@ import {
   BarChart3,
   CalendarClock,
   Check,
+  ChevronDown,
   ClipboardList,
   Link2,
   MessageCircle,
@@ -9,7 +10,9 @@ import {
   Truck,
   Wallet,
 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Button } from '../../components/ui'
+import { ARTICLES, articlePath } from '../../content/articles'
 
 const STEPS = [
   { icon: ClipboardList, title: 'Buat PO', text: 'Pilih produk, atur kuota dan tanggal tutup. Cukup beberapa ketukan.' },
@@ -18,12 +21,60 @@ const STEPS = [
 ]
 
 const FEATURES = [
-  { icon: CalendarClock, tone: 'bg-green-100 text-green-700', title: 'Kuota dan batas waktu', text: 'PO ditutup otomatis saat kuota penuh atau waktu habis.' },
-  { icon: Wallet, tone: 'bg-amber-100 text-amber-700', title: 'Lunas atau DP', text: 'Pembeli unggah bukti transfer, kamu terima atau tolak dari satu halaman.' },
-  { icon: Truck, tone: 'bg-sky-100 text-sky-700', title: 'Resi dan status kirim', text: 'Pembeli melihat tahap pesanan dan nomor resi tanpa perlu bertanya.' },
-  { icon: ReceiptText, tone: 'bg-rose-100 text-rose-700', title: 'Cek pesanan tanpa akun', text: 'Satu link rahasia per pesanan. Tidak ada kata sandi yang perlu diingat.' },
-  { icon: BarChart3, tone: 'bg-violet-100 text-violet-700', title: 'Laporan per PO', text: 'Omzet, piutang, dan laba kotor tiap PO terlihat jelas.' },
-  { icon: MessageCircle, tone: 'bg-emerald-100 text-emerald-700', title: 'Tetap lewat WhatsApp', text: 'Kamu yang menekan tombol kirim. Tanpa bot, tanpa risiko akun diblokir.' },
+  { icon: CalendarClock, tone: 'bg-green-100 text-green-700', title: 'Kuota dan batas waktu', text: 'PO ditutup otomatis saat kuota penuh atau waktu tutup tercapai, jadi tidak ada pesanan yang kebablasan.' },
+  { icon: Wallet, tone: 'bg-amber-100 text-amber-700', title: 'Lunas atau DP', text: 'Pilih pembayaran lunas atau DP untuk tiap PO. Pembeli mengunggah bukti transfer, kamu menerima atau menolaknya dari satu halaman.' },
+  { icon: Truck, tone: 'bg-sky-100 text-sky-700', title: 'Resi dan status kirim', text: 'Pembeli melihat tahap pesanan dan nomor resi sendiri, tanpa perlu bertanya ke kamu.' },
+  { icon: ReceiptText, tone: 'bg-rose-100 text-rose-700', title: 'Cek pesanan tanpa akun', text: 'Pembeli membuka link pesanannya, atau memasukkan kode pesanan dan nomor WhatsApp. Tidak perlu akun atau kata sandi.' },
+  { icon: BarChart3, tone: 'bg-violet-100 text-violet-700', title: 'Laporan per PO', text: 'Omzet, pembayaran yang belum masuk, dan laba kasar tiap PO terlihat jelas.' },
+  { icon: MessageCircle, tone: 'bg-emerald-100 text-emerald-700', title: 'Tetap lewat WhatsApp', text: 'Kamu yang membagikan link dan menekan tombol kirim. Tanpa bot, jadi tidak ada pesan otomatis yang berisiko membuat akun diblokir.' },
+]
+
+const FAQ = [
+  {
+    q: 'Apa itu PO Hub?',
+    a: 'PO Hub adalah aplikasi web untuk penjual yang membuka pre-order (PO) lewat WhatsApp Group. Kamu membuat PO, membagikan satu link, lalu pesanan, bukti bayar, dan status pengiriman tercatat di satu tempat.',
+  },
+  {
+    q: 'Siapa yang cocok memakai PO Hub?',
+    a: 'Penjual perorangan dan usaha kecil yang menjual dengan sistem pre-order, misalnya makanan dan kue, camilan, fashion, atau hampers.',
+  },
+  {
+    q: 'Apakah pembeli perlu mendaftar akun?',
+    a: 'Tidak. Pembeli cukup membuka link PO, memilih barang, lalu mengisi nama, nomor WhatsApp, dan alamat.',
+  },
+  {
+    q: 'Bagaimana pembeli membayar?',
+    a: 'Kamu mengisi info pembayaran, misalnya nomor rekening, di profil toko. Setelah memesan, pembeli melihat info itu dan mengunggah foto bukti transfer. Kamu memeriksanya lalu menerima atau menolak buktinya.',
+  },
+  {
+    q: 'Apakah bisa pembayaran DP?',
+    a: 'Bisa. Setiap PO memakai pembayaran lunas atau DP dengan persentase yang kamu tentukan.',
+  },
+  {
+    q: 'Bagaimana kuota dan stok dikelola?',
+    a: 'Kamu mengatur kuota dan waktu tutup untuk tiap PO. PO ditutup otomatis saat kuota penuh atau waktu habis, dan stok produk yang dilacak ikut berkurang sesuai pesanan.',
+  },
+  {
+    q: 'Apakah PO Hub mengirim pesan otomatis ke WhatsApp?',
+    a: 'Tidak. Kamu yang membagikan link ke grup dan menekan tombol WhatsApp untuk menghubungi pembeli. Karena tidak memakai bot, tidak ada pesan otomatis yang berisiko membuat akun WhatsApp diblokir.',
+  },
+  {
+    q: 'Bagaimana pembeli mengecek pesanannya?',
+    a: (
+      <>
+        Lewat halaman <Link to="/cek" className="font-semibold text-brand-700 underline">Cek pesanan</Link>: masukkan kode pesanan dan nomor WhatsApp untuk melihat status dan nomor resi.
+      </>
+    ),
+  },
+  {
+    q: 'Bagaimana cara mulai?',
+    a: (
+      <>
+        Daftar, buat toko, tambahkan produk, lalu buka PO pertamamu. Langkah lengkapnya ada di{' '}
+        <Link to="/cara-pakai" className="font-semibold text-brand-700 underline">panduan cara pakai</Link>.
+      </>
+    ),
+  },
 ]
 
 /** Static picture of the product's real job: a PO announced in a group, and the order slip that comes back. */
@@ -153,6 +204,43 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-5xl px-4 py-14 sm:px-6 sm:py-20">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Panduan untuk penjual PO</h2>
+          <Link to="/artikel" className="text-sm font-semibold text-brand-700 hover:underline">
+            Semua artikel
+          </Link>
+        </div>
+        <ul className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+          {ARTICLES.slice(0, 3).map((a) => (
+            <li key={a.slug}>
+              <Link
+                to={articlePath(a.slug)}
+                className="flex h-full flex-col rounded-3xl border border-green-900/10 bg-white p-5 shadow-card transition-colors hover:border-brand-300"
+              >
+                <span className="font-extrabold tracking-tight text-slate-900">{a.title}</span>
+                <span className="mt-2 text-sm text-slate-600">{a.description}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section id="faq" className="scroll-mt-20 mx-auto max-w-3xl px-4 py-14 sm:px-6 sm:py-20">
+        <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Pertanyaan yang sering diajukan</h2>
+        <div className="mt-8 divide-y divide-slate-200 rounded-3xl border border-green-900/10 bg-white shadow-card">
+          {FAQ.map(({ q, a }) => (
+            <details key={q} className="group px-5 py-4 sm:px-6">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 font-semibold text-slate-900 [&::-webkit-details-marker]:hidden">
+                {q}
+                <ChevronDown className="size-5 shrink-0 text-slate-400 transition-transform group-open:rotate-180" aria-hidden="true" />
+              </summary>
+              <p className="mt-2 pr-8 text-slate-600">{a}</p>
+            </details>
+          ))}
         </div>
       </section>
 

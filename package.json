@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && vite build --ssr src/entry-server.jsx --outDir dist-ssr && node scripts/prerender.mjs",
     "lint": "oxlint",
     "check:functions": "node scripts/checkFunctions.js",
     "preview": "vite preview",
@@ -17,6 +17,7 @@
     "firebase": "^13.2.0",
     "firebase-admin": "^14.5.0",
     "lucide-react": "^1.68.0",
+    "marked": "^18.2.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-hook-form": "^7.91.0",

@@ -6,6 +6,7 @@ import { AuthLayout } from '../layouts/AuthLayout'
 import { FullPageLoader } from '../components/layout/FullPageLoader'
 import { ProtectedRoute } from './ProtectedRoute'
 import { GuestRoute } from './GuestRoute'
+import { Seo } from '../components/Seo'
 import LandingPage from '../pages/public/LandingPage'
 import NotFoundPage from '../pages/public/NotFoundPage'
 
@@ -18,6 +19,8 @@ const PrivacyPage = lazy(() => import('../pages/public/legal/PrivacyPage'))
 const ContactPage = lazy(() => import('../pages/public/ContactPage'))
 const TrackOrderPage = lazy(() => import('../pages/public/TrackOrderPage'))
 const HelpPage = lazy(() => import('../pages/public/HelpPage'))
+const ArticleIndexPage = lazy(() => import('../pages/public/ArticleIndexPage'))
+const ArticlePage = lazy(() => import('../pages/public/ArticlePage'))
 const OrderConfirmationPage = lazy(() => import('../pages/public/OrderConfirmationPage'))
 const OrdersPage = lazy(() => import('../pages/dashboard/OrdersPage'))
 const OrderDetailPage = lazy(() => import('../pages/dashboard/OrderDetailPage'))
@@ -37,11 +40,14 @@ const PurchaseOrderEditPage = lazy(() => import('../pages/dashboard/PurchaseOrde
 export function AppRoutes() {
   return (
     <Suspense fallback={<FullPageLoader />}>
+      <Seo />
       <Routes>
         <Route element={<PublicLayout />}>
           <Route index element={<LandingPage />} />
           <Route path="cek" element={<TrackOrderPage />} />
           <Route path="cara-pakai" element={<HelpPage />} />
+          <Route path="artikel" element={<ArticleIndexPage />} />
+          <Route path="artikel/:slug" element={<ArticlePage />} />
           <Route path="syarat-ketentuan" element={<TermsPage />} />
           <Route path="kebijakan-privasi" element={<PrivacyPage />} />
           <Route path="kontak" element={<ContactPage />} />

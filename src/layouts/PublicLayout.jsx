@@ -16,6 +16,9 @@ export function PublicLayout() {
             <Button to="/cara-pakai" size="sm" variant="ghost" className="max-sm:hidden">
               Cara pakai
             </Button>
+            <Button to="/artikel" size="sm" variant="ghost" className="max-sm:hidden">
+              Artikel
+            </Button>
             <Button to="/cek" size="sm" variant="ghost" className="max-sm:hidden">
               Cek pesanan
             </Button>
@@ -49,6 +52,9 @@ export function PublicLayout() {
           <nav aria-label="Tautan" className="flex flex-col gap-2 sm:items-end">
             <Link to="/cara-pakai" className="font-medium hover:text-brand-700">
               Cara pakai
+            </Link>
+            <Link to="/artikel" className="font-medium hover:text-brand-700">
+              Artikel
             </Link>
             <Link to="/cek" className="font-medium hover:text-brand-700">
               Cek pesanan

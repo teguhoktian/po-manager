@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /po/
+
+Sitemap: https://pohub.web.id/sitemap.xml

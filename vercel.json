@@ -1,8 +1,46 @@
 {
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.pohub.web.id"
+        }
+      ],
+      "destination": "https://pohub.web.id/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
-      "source": "/((?!api/).*)",
-      "destination": "/index.html"
+      "source": "/login",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/register",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/lupa-password",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/cek",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/dashboard/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/po/:path+",
+      "destination": "/app.html"
     }
   ],
   "headers": [
@@ -32,6 +70,15 @@
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co https://*.googleusercontent.com; font-src 'self' data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com; frame-src https://www.google.com https://*.firebaseapp.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
         }
       ]
     }
